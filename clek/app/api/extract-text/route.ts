@@ -66,7 +66,7 @@ async function extractPDF(file: File): Promise<string> {
   }
 
   try {
-    const pdfjs = (await import('pdfjs-dist/build/pdf.mjs')) as any
+    const pdfjs = (await import('pdfjs-dist')) as any
     const getDocument = pdfjs.getDocument ?? pdfjs.default?.getDocument
     if (typeof getDocument !== 'function') {
       throw new Error('pdfjs-dist getDocument unavailable')
@@ -98,8 +98,7 @@ async function extractPDF(file: File): Promise<string> {
 async function extractOfficeDoc(file: File): Promise<string> {
   try {
     const arrayBuffer = await file.arrayBuffer()
-    const mammothModule = await import('mammoth')
-    const mammoth = mammothModule.default ?? mammothModule
+    const mammoth = await import('mammoth')
     const result = await mammoth.extractRawText({ arrayBuffer })
     return result.value || ''
   } catch (e) {

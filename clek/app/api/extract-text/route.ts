@@ -55,7 +55,7 @@ async function extractPDF(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer()
 
   try {
-    const pdfParseModule = (await import('pdf-parse/lib/pdf-parse.js')) as any
+    const pdfParseModule = (await import('pdf-parse/node')) as any
     const pdfParse = pdfParseModule.default ?? pdfParseModule
     const data = await pdfParse(Buffer.from(arrayBuffer))
     if (typeof data?.text === 'string' && data.text.trim()) {

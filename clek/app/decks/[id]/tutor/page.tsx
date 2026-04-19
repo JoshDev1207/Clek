@@ -39,7 +39,8 @@ function saveUsage(deckId: string, count: number, date: string) {
 }
 
 export default function TutorPage() {
-  const { id } = useParams()
+  const params = useParams()
+  const id = Array.isArray(params.id) ? params.id[0] : params.id
   const { user, loading: authLoading, signInWithGoogle } = useAuth()
   const [deckName, setDeckName] = useState('Deck')
   const [question, setQuestion] = useState('')

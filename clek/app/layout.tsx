@@ -14,11 +14,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <AuthProvider>
-          <div className="flex min-h-screen">
-            {/* Sidebar - only visible on small screens (sm and below) */}
+          {/* On desktop (lg+): normal stacked layout (top navbar + main below) */}
+          {/* On tablet/mobile (below lg): flex row so sidebar sits beside content */}
+          <div className="lg:block flex min-h-screen">
             <NavbarWrapper />
-
-            {/* Main content */}
             <div className="flex flex-col flex-1 min-w-0">
               <main className="flex-1">{children}</main>
               <footer className="bg-[var(--cream)] text-center py-4 text-xs text-[var(--muted)] mt-6">

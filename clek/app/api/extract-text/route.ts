@@ -65,7 +65,7 @@ async function extractWithGroq(file: File, ext: string): Promise<string> {
   }
   const mimeType = mimeTypes[ext] || 'application/octet-stream'
 
-  // Try Groq document vision first (supports PDF natively)
+  // Try Groq document vision first (llama-4-scout supports PDF natively)
   const response = await fetch(GROQ_API_URL, {
     method: 'POST',
     headers: {
@@ -74,14 +74,14 @@ async function extractWithGroq(file: File, ext: string): Promise<string> {
     },
     body: JSON.stringify({
       model: 'meta-llama/llama-4-scout-17b-16e-instruct',
-      max_tokens: 8000,
+      max_tokens: 4096,
       messages: [
         {
           role: 'user',
           content: [
             {
               type: 'text',
-              text: 'Extract and return ALL the text content from this document. Return only the raw text content, preserving structure like headings and paragraphs. Do not summarize or add commentary.',
+              text: 'Extract and return ALL the text content from this document. Return only the raw text, preserving headings and paragraphs. No summaries or commentary.',
             },
             {
               type: 'document',
@@ -103,7 +103,7 @@ async function extractWithGroq(file: File, ext: string): Promise<string> {
     if (extracted.trim()) return extracted
   }
 
-  // Fallback: extract raw strings from binary and clean with Groq text model
+  // Fallback: extract readable strings from binary, send only a small chunk
   return extractTextFallback(arrayBuffer, ext, apiKey)
 }
 
@@ -114,7 +114,7 @@ async function extractTextFallback(
 ): Promise<string> {
   const bytes = new Uint8Array(arrayBuffer)
 
-  // Pull readable ASCII strings from the binary
+  // Pull readable ASCII strings from binary (works well for docx/pptx which are XML-based ZIPs)
   let raw = ''
   let current = ''
   for (let i = 0; i < bytes.length; i++) {
@@ -122,13 +122,26 @@ async function extractTextFallback(
     if (c >= 32 && c <= 126) {
       current += String.fromCharCode(c)
     } else {
-      if (current.length >= 4) raw += current + ' '
+      // Only keep strings of 5+ chars to filter out binary noise
+      if (current.length >= 5) raw += current + '\n'
       current = ''
     }
   }
-  if (current.length >= 4) raw += current
+  if (current.length >= 5) raw += current
 
-  const snippet = raw.slice(0, 12000)
+  // Remove XML/HTML tags and common docx artifacts
+  raw = raw
+    .replace(/<[^>]{1,200}>/g, ' ')       // strip XML tags
+    .replace(/[A-Za-z0-9+/]{40,}/g, '')   // strip base64 blobs
+    .replace(/\s{3,}/g, '\n')             // collapse whitespace
+    .trim()
+
+  // Keep only first 4000 chars to stay well within 12k TPM limit
+  const snippet = raw.slice(0, 4000)
+
+  if (!snippet.trim()) {
+    throw new Error(`Could not extract readable text from ${ext} file`)
+  }
 
   const response = await fetch(GROQ_API_URL, {
     method: 'POST',
@@ -137,16 +150,16 @@ async function extractTextFallback(
       'Authorization': `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: 'llama-3.3-70b-versatile',
-      max_tokens: 6000,
+      model: 'llama-3.1-8b-instant',  // 1M TPM limit - much more generous
+      max_tokens: 2048,
       messages: [
         {
           role: 'system',
-          content: 'You are a text extraction assistant. Extract only meaningful readable content from raw document data, removing XML tags, binary garbage, and formatting artifacts. Return clean plain text only.',
+          content: 'Extract only meaningful readable text from the raw document data. Remove XML tags, binary artifacts, and noise. Return clean plain text.',
         },
         {
           role: 'user',
-          content: `Extract the readable text content from this raw ${ext} document data:\n\n${snippet}`,
+          content: snippet,
         },
       ],
     }),

@@ -136,7 +136,7 @@ export default function NewDeckPage() {
     setSaving(true)
     try {
       // Collect all unique tags
-      const allTags = [...new Set(cards.flatMap(c => c.tags))].slice(0, 10)
+      const allTags = Array.from(new Set(cards.flatMap(c => c.tags))).slice(0, 10)
 
       // Create deck
       const { data: deck, error: deckError } = await supabase

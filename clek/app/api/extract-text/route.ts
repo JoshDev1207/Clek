@@ -55,7 +55,18 @@ async function extractPDF(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer()
 
   try {
-    const pdfjs = (await import('pdfjs-dist/legacy/build/pdf.mjs')) as any
+    const pdfParseModule = (await import('pdf-parse')) as any
+    const pdfParse = pdfParseModule.default ?? pdfParseModule
+    const data = await pdfParse(Buffer.from(arrayBuffer))
+    if (typeof data?.text === 'string' && data.text.trim()) {
+      return data.text
+    }
+  } catch (e) {
+    console.warn('pdf-parse failed, falling back to pdfjs-dist', e)
+  }
+
+  try {
+    const pdfjs = (await import('pdfjs-dist/build/pdf.mjs')) as any
     const getDocument = pdfjs.getDocument ?? pdfjs.default?.getDocument
     if (typeof getDocument !== 'function') {
       throw new Error('pdfjs-dist getDocument unavailable')
@@ -78,7 +89,7 @@ async function extractPDF(file: File): Promise<string> {
       return text
     }
   } catch (e) {
-    console.warn('pdfjs-dist failed', e)
+    console.warn('pdfjs-dist fallback failed', e)
   }
 
   throw new Error('No extractable text found in this PDF. It may be scanned or image-only.')
@@ -87,7 +98,8 @@ async function extractPDF(file: File): Promise<string> {
 async function extractOfficeDoc(file: File): Promise<string> {
   try {
     const arrayBuffer = await file.arrayBuffer()
-    const mammoth = await import('mammoth')
+    const mammothModule = await import('mammoth')
+    const mammoth = mammothModule.default ?? mammothModule
     const result = await mammoth.extractRawText({ arrayBuffer })
     return result.value || ''
   } catch (e) {

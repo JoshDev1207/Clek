@@ -55,17 +55,6 @@ async function extractPDF(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer()
 
   try {
-    const pdfParseModule = (await import('pdf-parse/node')) as any
-    const pdfParse = pdfParseModule.default ?? pdfParseModule
-    const data = await pdfParse(Buffer.from(arrayBuffer))
-    if (typeof data?.text === 'string' && data.text.trim()) {
-      return data.text
-    }
-  } catch (e) {
-    console.warn('pdf-parse failed, falling back to pdfjs-dist', e)
-  }
-
-  try {
     const pdfjs = (await import('pdfjs-dist/legacy/build/pdf.mjs')) as any
     const getDocument = pdfjs.getDocument ?? pdfjs.default?.getDocument
     if (typeof getDocument !== 'function') {
@@ -89,7 +78,7 @@ async function extractPDF(file: File): Promise<string> {
       return text
     }
   } catch (e) {
-    console.warn('pdfjs-dist fallback failed', e)
+    console.warn('pdfjs-dist failed', e)
   }
 
   throw new Error('No extractable text found in this PDF. It may be scanned or image-only.')

@@ -14,17 +14,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <AuthProvider>
-          {/* On desktop (lg+): normal stacked layout (top navbar + main below) */}
-          {/* On tablet/mobile (below lg): flex row so sidebar sits beside content */}
-          <div className="lg:block flex min-h-screen">
-            <NavbarWrapper />
-            <div className="flex flex-col flex-1 min-w-0">
-              <main className="flex-1">{children}</main>
-              <footer className="bg-[var(--cream)] text-center py-4 text-xs text-[var(--muted)] mt-6">
-                Built by Joshua Sarno · 2026 · Terms · Privacy Policy
-              </footer>
-            </div>
-          </div>
+          <NavbarWrapper />
+          <main>{children}</main>
+          <footer className="bg-[var(--cream)] text-center py-4 text-xs text-[var(--muted)] mt-6">
+            Built by Joshua Sarno · 2026 · Terms · Privacy Policy
+          </footer>
         </AuthProvider>
       </body>
     </html>

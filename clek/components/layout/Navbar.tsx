@@ -5,13 +5,14 @@ import { usePathname } from 'next/navigation'
 import { useAuth } from './AuthProvider'
 import { AuthModal } from '../ui/AuthModal'
 import { useState, useEffect, useRef } from 'react'
-import { LayoutGrid, BookOpen, BarChart2, Users, Search, LogOut, ArrowLeftRight } from 'lucide-react'
+import { LayoutGrid, BookOpen, BarChart2, Users, Search, LogOut, ArrowLeftRight, Menu, X } from 'lucide-react'
 
 export function Navbar() {
   const { user, signOut } = useAuth()
   const pathname = usePathname()
   const [showAuth, setShowAuth] = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
+  const [showSidebar, setShowSidebar] = useState(false)
   const [indicatorStyle, setIndicatorStyle] = useState({})
   const navRefs = useRef<(HTMLAnchorElement | null)[]>([])
 
@@ -34,7 +35,12 @@ export function Navbar() {
     }
   }, [pathname])
 
-  const UserMenu = ({ align = 'right' }: { align?: 'right' | 'left' }) =>
+  // Close sidebar on route change
+  useEffect(() => {
+    setShowSidebar(false)
+  }, [pathname])
+
+  const UserAvatar = ({ menuAlign = 'right' }: { menuAlign?: 'right' | 'left' }) =>
     user ? (
       <div className="relative">
         <button
@@ -45,7 +51,7 @@ export function Navbar() {
           {user.email?.[0]?.toUpperCase()}
         </button>
         {showUserMenu && (
-          <div className={`absolute ${align === 'right' ? 'right-0' : 'left-0'} top-10 bg-white rounded-xl shadow-lg border border-[var(--cream-border)] overflow-hidden w-48 z-50`}>
+          <div className={`absolute ${menuAlign === 'right' ? 'right-0' : 'left-0'} top-10 bg-white rounded-xl shadow-lg border border-[var(--cream-border)] overflow-hidden w-48 z-50`}>
             <div className="px-4 py-3 border-b border-[var(--cream-border)]">
               <div className="text-xs text-[var(--muted)] truncate">{user.email}</div>
             </div>
@@ -72,7 +78,9 @@ export function Navbar() {
 
   return (
     <>
-      {/* ══ DESKTOP TOP NAVBAR (lg and above) ══ */}
+      {/* ══════════════════════════════════════
+          DESKTOP TOP NAVBAR (lg and above)
+      ══════════════════════════════════════ */}
       <nav
         style={{ background: 'var(--cream)', borderBottom: '1px solid var(--cream-border)' }}
         className="hidden lg:block sticky top-0 z-50"
@@ -82,7 +90,6 @@ export function Navbar() {
             Clek
           </Link>
 
-          {/* Nav links with sliding indicator */}
           <div className="flex items-center gap-1 relative">
             <div
               className="absolute top-0 h-full rounded-lg transition-all duration-300 ease-out"
@@ -112,22 +119,70 @@ export function Navbar() {
             <button className="p-2 rounded-lg hover:bg-[var(--cream-dark)] transition-colors" style={{ color: 'var(--muted)' }}>
               <ArrowLeftRight size={17} />
             </button>
-            <UserMenu align="right" />
+            <UserAvatar menuAlign="right" />
           </div>
         </div>
       </nav>
 
-      {/* ══ TABLET LEFT SIDEBAR (sm to lg) ══ */}
+      {/* ══════════════════════════════════════
+          MEDIUM SCREEN TOP BAR (sm to lg)
+          Hamburger left | centered logo | avatar right
+      ══════════════════════════════════════ */}
+      <nav
+        style={{ background: 'var(--cream)', borderBottom: '1px solid var(--cream-border)' }}
+        className="hidden sm:flex lg:hidden sticky top-0 z-50 items-center justify-between px-4 h-16"
+      >
+        <button
+          onClick={() => setShowSidebar(true)}
+          className="p-2 rounded-lg hover:bg-[var(--cream-dark)] transition-colors"
+          style={{ color: 'var(--muted)' }}
+        >
+          <Menu size={20} />
+        </button>
+
+        <Link href="/" className="splash-logo absolute left-1/2 -translate-x-1/2" style={{ fontSize: '1.6rem' }}>
+          Clek
+        </Link>
+
+        <div className="flex items-center gap-2">
+          <UserAvatar menuAlign="right" />
+        </div>
+      </nav>
+
+      {/* ══════════════════════════════════════
+          COLLAPSIBLE SIDEBAR (sm to lg)
+          Matches kwek: overlay + slide-in panel
+      ══════════════════════════════════════ */}
+      {/* Backdrop */}
+      {showSidebar && (
+        <div
+          className="hidden sm:block lg:hidden fixed inset-0 z-40 bg-black/20"
+          onClick={() => setShowSidebar(false)}
+        />
+      )}
+
+      {/* Sidebar panel */}
       <aside
-        className="hidden sm:flex lg:hidden flex-col sticky top-0 h-screen w-[200px] shrink-0 px-3 py-5"
+        className={`hidden sm:flex lg:hidden flex-col fixed top-0 left-0 h-full w-[220px] z-50 px-3 py-4 transition-transform duration-300 ease-out ${
+          showSidebar ? 'translate-x-0' : '-translate-x-full'
+        }`}
         style={{ background: 'var(--cream)', borderRight: '1px solid var(--cream-border)' }}
       >
-        {/* Logo centered + avatar */}
+        {/* Top row: logo + close button + avatar */}
         <div className="flex items-center justify-between mb-5 px-2">
           <Link href="/" className="splash-logo" style={{ fontSize: '1.4rem' }}>
             Clek
           </Link>
-          <UserMenu align="left" />
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowSidebar(false)}
+              className="p-1.5 rounded-lg hover:bg-[var(--cream-dark)] transition-colors"
+              style={{ color: 'var(--muted)' }}
+            >
+              <X size={18} />
+            </button>
+            <UserAvatar menuAlign="left" />
+          </div>
         </div>
 
         {/* Search */}
@@ -164,7 +219,9 @@ export function Navbar() {
         </nav>
       </aside>
 
-      {/* ══ MOBILE TOP BAR (below sm) ══ */}
+      {/* ══════════════════════════════════════
+          MOBILE TOP BAR (below sm)
+      ══════════════════════════════════════ */}
       <header
         className="sm:hidden sticky top-0 z-50 flex items-center justify-between px-4 h-14"
         style={{ background: 'var(--cream)', borderBottom: '1px solid var(--cream-border)' }}
@@ -176,11 +233,13 @@ export function Navbar() {
           <button className="p-2 rounded-lg hover:bg-[var(--cream-dark)] transition-colors" style={{ color: 'var(--muted)' }}>
             <Search size={17} />
           </button>
-          <UserMenu align="right" />
+          <UserAvatar menuAlign="right" />
         </div>
       </header>
 
-      {/* ══ MOBILE BOTTOM TAB BAR (below sm) ══ */}
+      {/* ══════════════════════════════════════
+          MOBILE BOTTOM TAB BAR (below sm)
+      ══════════════════════════════════════ */}
       <nav
         className="sm:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around px-2 py-2"
         style={{ background: 'var(--cream)', borderTop: '1px solid var(--cream-border)' }}

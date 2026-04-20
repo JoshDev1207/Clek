@@ -15,26 +15,11 @@ import {
 } from 'lucide-react'
 
 const features = [
-  {
-    icon: FileText,
-    text: 'Upload any PDF, notes, or paste raw text',
-  },
-  {
-    icon: Sparkles,
-    text: 'AI generates flashcards and quizzes instantly',
-  },
-  {
-    icon: Brain,
-    text: 'Adaptive quiz mode tests what you actually need',
-  },
-  {
-    icon: Zap,
-    text: 'AI tutor explains concepts on demand',
-  },
-  {
-    icon: Users,
-    text: 'Share decks with your study group',
-  },
+  { icon: FileText, text: 'Upload any PDF, notes, or paste raw text' },
+  { icon: Sparkles, text: 'AI generates flashcards and quizzes instantly' },
+  { icon: Brain, text: 'Adaptive quiz mode tests what you actually need' },
+  { icon: Zap, text: 'AI tutor explains concepts on demand' },
+  { icon: Users, text: 'Share decks with your study group' },
 ]
 
 export function LandingPage() {
@@ -78,10 +63,8 @@ export function LandingPage() {
     <div className="landing-root">
       {/* ── LEFT PANEL ── */}
       <div className="landing-left">
-        {/* Logo */}
         <div className="landing-logo">Clek</div>
 
-        {/* Hero headline */}
         <h1 className="landing-headline">
           Study smarter,<br />
           <span className="landing-headline-accent">not harder.</span>
@@ -91,7 +74,6 @@ export function LandingPage() {
           Turn any material into AI-powered flashcards and quizzes in seconds.
         </p>
 
-        {/* Feature list */}
         <ul className="landing-features">
           {features.map(({ icon: Icon, text }, i) => (
             <li key={i} className="landing-feature-item" style={{ animationDelay: `${0.1 + i * 0.07}s` }}>
@@ -112,7 +94,6 @@ export function LandingPage() {
       {/* ── RIGHT PANEL ── */}
       <div className="landing-right">
         <div className="auth-card">
-          {/* Mode tabs */}
           <div className="auth-tabs">
             <button
               className={`auth-tab ${mode === 'signup' ? 'auth-tab--active' : ''}`}
@@ -134,7 +115,6 @@ export function LandingPage() {
               : 'Welcome back! Sign in to access your decks.'}
           </p>
 
-          {/* Google */}
           <button onClick={handleGoogle} className="auth-google-btn">
             <svg width="18" height="18" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -145,14 +125,12 @@ export function LandingPage() {
             Continue with Google
           </button>
 
-          {/* Divider */}
           <div className="auth-divider">
             <div className="auth-divider-line" />
             <span className="auth-divider-text">or</span>
             <div className="auth-divider-line" />
           </div>
 
-          {/* Email form */}
           <form onSubmit={handleEmailAuth} className="auth-form">
             <input
               type="email"
@@ -196,8 +174,8 @@ export function LandingPage() {
         </div>
       </div>
 
-      {/* Landing-specific styles */}
       <style>{`
+        /* ── BASE ── */
         .landing-root {
           min-height: 100vh;
           display: flex;
@@ -206,9 +184,9 @@ export function LandingPage() {
           background: var(--cream);
           padding: 2.5rem;
           gap: 6rem;
+          font-family: var(--font-sans);
         }
 
-        /* ── LEFT ── */
         .landing-left {
           display: flex;
           flex-direction: column;
@@ -224,6 +202,7 @@ export function LandingPage() {
           color: var(--orange);
           letter-spacing: -0.04em;
           line-height: 1;
+          font-family: var(--font-sans);
         }
 
         .landing-headline {
@@ -233,10 +212,13 @@ export function LandingPage() {
           letter-spacing: -0.035em;
           color: var(--charcoal);
           margin: 0;
+          font-family: var(--font-sans);
         }
 
         .landing-headline-accent {
           color: var(--orange);
+          font-weight: 800;
+          font-family: var(--font-sans);
         }
 
         .landing-sub {
@@ -245,6 +227,8 @@ export function LandingPage() {
           line-height: 1.6;
           max-width: 420px;
           margin: 0;
+          font-weight: 500;
+          font-family: var(--font-sans);
         }
 
         .landing-features {
@@ -262,9 +246,10 @@ export function LandingPage() {
           gap: 0.65rem;
           font-size: 1rem;
           color: var(--charcoal);
-          font-weight: 500;
+          font-weight: 600;
           opacity: 0;
           animation: fadeSlideUp 0.45s ease forwards;
+          font-family: var(--font-sans);
         }
 
         .landing-feature-arrow {
@@ -285,9 +270,11 @@ export function LandingPage() {
           color: var(--muted);
           opacity: 0.75;
           padding-top: 0.25rem;
+          font-weight: 500;
+          font-family: var(--font-sans);
         }
 
-        /* ── RIGHT ── */
+        /* ── RIGHT / AUTH CARD ── */
         .landing-right {
           flex-shrink: 0;
           display: flex;
@@ -305,7 +292,6 @@ export function LandingPage() {
           animation: fadeSlideUp 0.4s ease forwards;
         }
 
-        /* Tabs */
         .auth-tabs {
           display: flex;
           background: var(--cream);
@@ -319,7 +305,7 @@ export function LandingPage() {
           flex: 1;
           padding: 0.6rem 0;
           font-size: 1rem;
-          font-weight: 600;
+          font-weight: 700;
           border-radius: 0.65rem;
           border: none;
           cursor: pointer;
@@ -328,6 +314,7 @@ export function LandingPage() {
           background: transparent;
           text-align: center;
           line-height: 1;
+          font-family: var(--font-sans);
         }
 
         .auth-tab--active {
@@ -341,9 +328,10 @@ export function LandingPage() {
           color: var(--muted);
           margin: 0 0 1.25rem;
           line-height: 1.5;
+          font-weight: 500;
+          font-family: var(--font-sans);
         }
 
-        /* Google */
         .auth-google-btn {
           width: 100%;
           display: flex;
@@ -356,35 +344,23 @@ export function LandingPage() {
           background: white;
           color: var(--charcoal);
           font-size: 1rem;
-          font-weight: 600;
+          font-weight: 700;
           cursor: pointer;
           transition: background 0.15s;
+          font-family: var(--font-sans);
         }
         .auth-google-btn:hover { background: var(--cream); }
 
-        /* Divider */
         .auth-divider {
           display: flex;
           align-items: center;
           gap: 0.75rem;
           margin: 1.1rem 0;
         }
-        .auth-divider-line {
-          flex: 1;
-          height: 1px;
-          background: var(--cream-border);
-        }
-        .auth-divider-text {
-          font-size: 0.85rem;
-          color: var(--muted);
-        }
+        .auth-divider-line { flex: 1; height: 1px; background: var(--cream-border); }
+        .auth-divider-text { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
 
-        /* Form */
-        .auth-form {
-          display: flex;
-          flex-direction: column;
-          gap: 0.75rem;
-        }
+        .auth-form { display: flex; flex-direction: column; gap: 0.75rem; }
 
         .auth-input {
           width: 100%;
@@ -394,13 +370,15 @@ export function LandingPage() {
           background: var(--cream);
           color: var(--charcoal);
           font-size: 1rem;
+          font-weight: 500;
           outline: none;
           transition: border-color 0.15s;
+          font-family: var(--font-sans);
         }
         .auth-input:focus { border-color: var(--orange); }
 
-        .auth-error { font-size: 0.85rem; color: #d95c5c; margin: 0; }
-        .auth-success { font-size: 0.85rem; color: #4caf50; margin: 0; }
+        .auth-error { font-size: 0.85rem; color: #d95c5c; margin: 0; font-weight: 600; }
+        .auth-success { font-size: 0.85rem; color: #4caf50; margin: 0; font-weight: 600; }
 
         .auth-submit-btn {
           width: 100%;
@@ -410,47 +388,123 @@ export function LandingPage() {
           background: var(--charcoal);
           color: white;
           font-size: 1rem;
-          font-weight: 600;
+          font-weight: 700;
           cursor: pointer;
           transition: opacity 0.15s;
           margin-top: 0.25rem;
+          font-family: var(--font-sans);
         }
         .auth-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
         .auth-submit-btn:hover:not(:disabled) { opacity: 0.85; }
 
-        /* Switch */
         .auth-switch {
           text-align: center;
           font-size: 0.875rem;
           color: var(--muted);
           margin: 1.1rem 0 0;
+          font-weight: 500;
+          font-family: var(--font-sans);
         }
         .auth-switch-btn {
           background: none;
           border: none;
           color: var(--orange);
-          font-weight: 600;
+          font-weight: 700;
           font-size: 0.875rem;
           cursor: pointer;
           padding: 0;
+          font-family: var(--font-sans);
         }
 
-        /* Responsive */
+        /* ── TABLET ── */
         @media (max-width: 900px) {
           .landing-root {
             flex-direction: column;
-            gap: 2.5rem;
-            padding: 3rem 1.5rem;
+            gap: 2rem;
+            padding: 2rem 1.25rem;
+            align-items: stretch;
           }
           .landing-left {
             max-width: 100%;
+            gap: 1.25rem;
+          }
+          .landing-logo {
+            font-size: 2rem;
+          }
+          .landing-headline {
+            font-size: 2.75rem;
+            letter-spacing: -0.03em;
+          }
+          .landing-sub {
+            font-size: 1rem;
+            max-width: 100%;
+          }
+          .landing-feature-item {
+            font-size: 0.95rem;
           }
           .landing-right {
             width: 100%;
           }
           .auth-card {
             width: 100%;
-            max-width: 420px;
+            max-width: 100%;
+            padding: 1.75rem;
+          }
+        }
+
+        /* ── MOBILE ── */
+        @media (max-width: 480px) {
+          .landing-root {
+            padding: 1.5rem 1rem;
+            gap: 1.5rem;
+          }
+          .landing-logo {
+            font-size: 1.75rem;
+            font-weight: 800;
+          }
+          .landing-headline {
+            font-size: 2.1rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+          }
+          .landing-sub {
+            font-size: 0.9rem;
+          }
+          .landing-features {
+            gap: 0.6rem;
+          }
+          .landing-feature-item {
+            font-size: 0.875rem;
+            font-weight: 600;
+          }
+          .landing-tagline {
+            font-size: 0.8rem;
+          }
+          .auth-card {
+            padding: 1.25rem;
+            border-radius: 1.25rem;
+          }
+          .auth-tab {
+            font-size: 0.9rem;
+            font-weight: 700;
+          }
+          .auth-google-btn {
+            font-size: 0.9rem;
+            font-weight: 700;
+            padding: 0.75rem;
+          }
+          .auth-input {
+            font-size: 0.9rem;
+            padding: 0.75rem 0.875rem;
+          }
+          .auth-submit-btn {
+            font-size: 0.9rem;
+            font-weight: 700;
+            padding: 0.75rem;
+          }
+          .auth-desc {
+            font-size: 0.8rem;
           }
         }
       `}</style>

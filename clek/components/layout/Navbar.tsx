@@ -35,6 +35,7 @@ export function Navbar() {
     }
   }, [pathname])
 
+  // Close sidebar on navigation
   useEffect(() => {
     setShowSidebar(false)
   }, [pathname])
@@ -50,7 +51,7 @@ export function Navbar() {
           {user.email?.[0]?.toUpperCase()}
         </button>
         {showUserMenu && (
-          <div className={`absolute ${menuAlign === 'right' ? 'right-0' : 'left-0'} top-10 bg-white rounded-xl shadow-lg border border-[var(--cream-border)] overflow-hidden w-48 z-50`}>
+          <div className={`absolute ${menuAlign === 'right' ? 'right-0' : 'left-0'} top-10 bg-white rounded-xl shadow-lg border border-[var(--cream-border)] overflow-hidden w-48 z-[60]`}>
             <div className="px-4 py-3 border-b border-[var(--cream-border)]">
               <div className="text-xs text-[var(--muted)] truncate">{user.email}</div>
             </div>
@@ -121,10 +122,10 @@ export function Navbar() {
         </div>
       </nav>
 
-      {/* ══ MEDIUM TOP BAR (sm–lg): hamburger | centered logo | avatar ══ */}
+      {/* ══ SMALL/MEDIUM TOP BAR (below lg): hamburger | centered logo | avatar ══ */}
       <nav
         style={{ background: 'var(--cream)', borderBottom: '1px solid var(--cream-border)' }}
-        className="hidden sm:flex lg:hidden sticky top-0 z-50 items-center h-16 px-4 relative"
+        className="lg:hidden sticky top-0 z-50 flex items-center h-16 px-4 relative"
       >
         {/* Left: hamburger */}
         <button
@@ -135,7 +136,7 @@ export function Navbar() {
           <Menu size={20} />
         </button>
 
-        {/* Center: logo absolutely centered */}
+        {/* Center: logo */}
         <Link
           href="/"
           className="splash-logo absolute left-1/2 -translate-x-1/2"
@@ -150,24 +151,24 @@ export function Navbar() {
         </div>
       </nav>
 
-      {/* ══ COLLAPSIBLE SIDEBAR OVERLAY (sm–lg) ══ */}
+      {/* ══ COLLAPSIBLE SIDEBAR OVERLAY (below lg) ══ */}
 
       {/* Backdrop */}
       {showSidebar && (
         <div
-          className="hidden sm:block lg:hidden fixed inset-0 z-40 bg-black/25"
+          className="lg:hidden fixed inset-0 z-40 bg-black/25"
           onClick={() => setShowSidebar(false)}
         />
       )}
 
-      {/* Sidebar panel — slides in from left over the content */}
+      {/* Sidebar panel */}
       <aside
-        className={`hidden sm:flex lg:hidden flex-col fixed top-0 left-0 h-full w-[220px] z-50 px-3 py-4 transition-transform duration-300 ease-out ${
+        className={`lg:hidden flex flex-col fixed top-0 left-0 h-full w-[220px] z-50 px-3 py-4 transition-transform duration-300 ease-out ${
           showSidebar ? 'translate-x-0' : '-translate-x-full'
         }`}
         style={{ background: 'var(--cream)', borderRight: '1px solid var(--cream-border)' }}
       >
-        {/* Row: logo centered, X on right, avatar on right */}
+        {/* Logo + X + avatar */}
         <div className="flex items-center justify-between mb-5 px-1">
           <Link href="/" className="splash-logo" style={{ fontSize: '1.4rem' }}>
             Clek
@@ -184,7 +185,7 @@ export function Navbar() {
           </div>
         </div>
 
-        {/* Search bar */}
+        {/* Search */}
         <div className="mb-4 px-1">
           <div
             className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm"
@@ -217,46 +218,6 @@ export function Navbar() {
           })}
         </nav>
       </aside>
-
-      {/* ══ MOBILE TOP BAR (below sm) ══ */}
-      <header
-        className="sm:hidden sticky top-0 z-50 flex items-center justify-between px-4 h-14"
-        style={{ background: 'var(--cream)', borderBottom: '1px solid var(--cream-border)' }}
-      >
-        <Link href="/" className="splash-logo" style={{ fontSize: '1.4rem' }}>
-          Clek
-        </Link>
-        <div className="flex items-center gap-2">
-          <button className="p-2 rounded-lg hover:bg-[var(--cream-dark)] transition-colors" style={{ color: 'var(--muted)' }}>
-            <Search size={17} />
-          </button>
-          <UserAvatar menuAlign="right" />
-        </div>
-      </header>
-
-      {/* ══ MOBILE BOTTOM TAB BAR (below sm) ══ */}
-      <nav
-        className="sm:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around px-2 py-2"
-        style={{ background: 'var(--cream)', borderTop: '1px solid var(--cream-border)' }}
-      >
-        {navLinks.map(({ href, label, icon: Icon }) => {
-          const active = pathname?.startsWith(href)
-          return (
-            <Link
-              key={href}
-              href={href}
-              className="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-colors"
-              style={{ color: active ? 'var(--orange)' : 'var(--muted)' }}
-            >
-              <Icon size={20} style={{ color: active ? 'var(--orange)' : 'var(--muted)', opacity: active ? 1 : 0.5 }} />
-              {label}
-            </Link>
-          )
-        })}
-      </nav>
-
-      {/* Spacer for mobile bottom nav */}
-      <div className="sm:hidden h-16" />
 
       {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
     </>

@@ -35,7 +35,6 @@ export function Navbar() {
     }
   }, [pathname])
 
-  // Close sidebar on route change
   useEffect(() => {
     setShowSidebar(false)
   }, [pathname])
@@ -78,9 +77,7 @@ export function Navbar() {
 
   return (
     <>
-      {/* ══════════════════════════════════════
-          DESKTOP TOP NAVBAR (lg and above)
-      ══════════════════════════════════════ */}
+      {/* ══ DESKTOP TOP NAVBAR (lg+) ══ */}
       <nav
         style={{ background: 'var(--cream)', borderBottom: '1px solid var(--cream-border)' }}
         className="hidden lg:block sticky top-0 z-50"
@@ -124,14 +121,12 @@ export function Navbar() {
         </div>
       </nav>
 
-      {/* ══════════════════════════════════════
-          MEDIUM SCREEN TOP BAR (sm to lg)
-          Hamburger left | centered logo | avatar right
-      ══════════════════════════════════════ */}
+      {/* ══ MEDIUM TOP BAR (sm–lg): hamburger | centered logo | avatar ══ */}
       <nav
         style={{ background: 'var(--cream)', borderBottom: '1px solid var(--cream-border)' }}
-        className="hidden sm:flex lg:hidden sticky top-0 z-50 items-center justify-between px-4 h-16"
+        className="hidden sm:flex lg:hidden sticky top-0 z-50 items-center h-16 px-4 relative"
       >
+        {/* Left: hamburger */}
         <button
           onClick={() => setShowSidebar(true)}
           className="p-2 rounded-lg hover:bg-[var(--cream-dark)] transition-colors"
@@ -140,40 +135,44 @@ export function Navbar() {
           <Menu size={20} />
         </button>
 
-        <Link href="/" className="splash-logo absolute left-1/2 -translate-x-1/2" style={{ fontSize: '1.6rem' }}>
+        {/* Center: logo absolutely centered */}
+        <Link
+          href="/"
+          className="splash-logo absolute left-1/2 -translate-x-1/2"
+          style={{ fontSize: '1.6rem' }}
+        >
           Clek
         </Link>
 
-        <div className="flex items-center gap-2">
+        {/* Right: avatar */}
+        <div className="ml-auto">
           <UserAvatar menuAlign="right" />
         </div>
       </nav>
 
-      {/* ══════════════════════════════════════
-          COLLAPSIBLE SIDEBAR (sm to lg)
-          Matches kwek: overlay + slide-in panel
-      ══════════════════════════════════════ */}
+      {/* ══ COLLAPSIBLE SIDEBAR OVERLAY (sm–lg) ══ */}
+
       {/* Backdrop */}
       {showSidebar && (
         <div
-          className="hidden sm:block lg:hidden fixed inset-0 z-40 bg-black/20"
+          className="hidden sm:block lg:hidden fixed inset-0 z-40 bg-black/25"
           onClick={() => setShowSidebar(false)}
         />
       )}
 
-      {/* Sidebar panel */}
+      {/* Sidebar panel — slides in from left over the content */}
       <aside
         className={`hidden sm:flex lg:hidden flex-col fixed top-0 left-0 h-full w-[220px] z-50 px-3 py-4 transition-transform duration-300 ease-out ${
           showSidebar ? 'translate-x-0' : '-translate-x-full'
         }`}
         style={{ background: 'var(--cream)', borderRight: '1px solid var(--cream-border)' }}
       >
-        {/* Top row: logo + close button + avatar */}
-        <div className="flex items-center justify-between mb-5 px-2">
+        {/* Row: logo centered, X on right, avatar on right */}
+        <div className="flex items-center justify-between mb-5 px-1">
           <Link href="/" className="splash-logo" style={{ fontSize: '1.4rem' }}>
             Clek
           </Link>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <button
               onClick={() => setShowSidebar(false)}
               className="p-1.5 rounded-lg hover:bg-[var(--cream-dark)] transition-colors"
@@ -185,10 +184,10 @@ export function Navbar() {
           </div>
         </div>
 
-        {/* Search */}
-        <div className="mb-3 px-1">
+        {/* Search bar */}
+        <div className="mb-4 px-1">
           <div
-            className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm"
+            className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm"
             style={{ background: 'var(--cream-dark)', color: 'var(--muted)' }}
           >
             <Search size={14} />
@@ -204,7 +203,7 @@ export function Navbar() {
               <Link
                 key={href}
                 href={href}
-                className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-colors"
+                className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm transition-colors"
                 style={{
                   background: active ? 'var(--cream-dark)' : 'transparent',
                   color: active ? 'var(--charcoal)' : 'var(--muted)',
@@ -219,9 +218,7 @@ export function Navbar() {
         </nav>
       </aside>
 
-      {/* ══════════════════════════════════════
-          MOBILE TOP BAR (below sm)
-      ══════════════════════════════════════ */}
+      {/* ══ MOBILE TOP BAR (below sm) ══ */}
       <header
         className="sm:hidden sticky top-0 z-50 flex items-center justify-between px-4 h-14"
         style={{ background: 'var(--cream)', borderBottom: '1px solid var(--cream-border)' }}
@@ -237,9 +234,7 @@ export function Navbar() {
         </div>
       </header>
 
-      {/* ══════════════════════════════════════
-          MOBILE BOTTOM TAB BAR (below sm)
-      ══════════════════════════════════════ */}
+      {/* ══ MOBILE BOTTOM TAB BAR (below sm) ══ */}
       <nav
         className="sm:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around px-2 py-2"
         style={{ background: 'var(--cream)', borderTop: '1px solid var(--cream-border)' }}
@@ -260,7 +255,7 @@ export function Navbar() {
         })}
       </nav>
 
-      {/* Spacer so content isn't hidden behind mobile bottom nav */}
+      {/* Spacer for mobile bottom nav */}
       <div className="sm:hidden h-16" />
 
       {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
